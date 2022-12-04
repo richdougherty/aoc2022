@@ -7,10 +7,10 @@
 (require racket/string)
 (require rackunit)
 
+;;; Input files ;;;
+
 (define example-lines (file->lines "example"))
 (define input-lines (file->lines "input"))
-
-
 
 ;;; Parsing ;;;
 
@@ -61,7 +61,6 @@
 (check-equal? (either-fully-contains (cons (assignment 6 6) (assignment 4 6))) #t)
 (check-equal? (either-fully-contains (cons (assignment 4 6) (assignment 6 6))) #t)
 
-
 (define (list-fully-contained lines)
   (for/list ([assignment-pair (map string->assignment-pair lines)]
              #:when (either-fully-contains assignment-pair))
@@ -76,7 +75,7 @@
 ;;; Part 2 logic ;;;;
 
 (define (point-contained-in x assmt)
-  (and (>= (assignment-start assmt) x) (<= x (assignment-end assmt))))
+  (and (<= (assignment-start assmt) x) (<= x (assignment-end assmt))))
 
 (check-equal? (point-contained-in 1 (assignment 1 2)) #t)
 (check-equal? (point-contained-in 1 (assignment 2 4)) #f)
@@ -84,4 +83,23 @@
 (check-equal? (point-contained-in 3 (assignment 1 2)) #f)
 
 (define (overlaps a b)
-  (and (<= (assignment-start a) (assignment-start b)) (>= (assignment-end a) (assignment-end b))))
+  (or (point-contained-in (assignment-start a) b)
+      (point-contained-in (assignment-end a) b)
+      (point-contained-in (assignment-start b) a)
+      (point-contained-in (assignment-end b) a)))
+
+(check-equal? (overlaps (assignment 2 4) (assignment 6 8)) #f)
+(check-equal? (overlaps (assignment 2 3) (assignment 4 5)) #f)
+(check-equal? (overlaps (assignment 5 7) (assignment 7 9)) #t)
+(check-equal? (overlaps (assignment 2 8) (assignment 3 7)) #t)
+(check-equal? (overlaps (assignment 6 6) (assignment 4 6)) #t)
+
+(define (list-overlaps lines)
+  (for/list ([assignment-pair (map string->assignment-pair lines)]
+             #:when (overlaps (car assignment-pair) (cdr assignment-pair)))
+    assignment-pair))
+
+;;; Part 2 Answers ;;;
+
+(check-equal? (length (list-overlaps example-lines)) 4)
+(displayln (length (list-overlaps input-lines)))
