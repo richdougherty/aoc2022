@@ -27,8 +27,16 @@ I'm learning Racket while I do the Advent exercises. These are my notes as I go.
 
 ## [Day 4: Camp Cleanup](https://adventofcode.com/2022/day/4)
 
+[Code](03/rucksack-reorganization.rkt)
+
 * I used [structs](https://docs.racket-lang.org/guide/define-struct.html) for the first time.
 * I used [pattern matching](https://docs.racket-lang.org/reference/match.html) to destructure the results of string splitting - and verify the length at the same time.
+
+## [Day 5: Supply Stacks](https://adventofcode.com/2022/day/5)
+
+* Using curry instead of custom lambdas
+
+[Code](05/supply-stacks.rkt)
 
 # Racket links
 
